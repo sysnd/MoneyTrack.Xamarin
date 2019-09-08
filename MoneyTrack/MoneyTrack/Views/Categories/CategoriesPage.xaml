@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="MoneyTrack.Views.Categories.CategoriesPage"
+             Title="{Binding Title}"
+             x:Name="CategoriesListPage"
+             xmlns:constants="clr-namespace:MoneyTrack.Models">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="AddCategory_Clicked" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <ListView x:Name="CategoriesList" 
+                      SeparatorVisibility="Default" 
+                      VerticalOptions="FillAndExpand" 
+                      HasUnevenRows="True"
+                      RefreshCommand="{Binding LoadCategoriesCommand}"
+                      IsPullToRefreshEnabled="true"
+                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                      CachingStrategy="RecycleElement"
+                      ItemSelected="OnItemSelected">
+
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid BackgroundColor="White">
+                                <Label Text="{Binding Name}" TextColor="Black" FontSize="Medium" Margin="20"/>
+                                <Button Text="X" TextColor="DodgerBlue" 
+                                        FontSize="Medium" FontAttributes="Bold"
+                                        BackgroundColor="White" HorizontalOptions="End" 
+                                        VerticalOptions="Center" WidthRequest="50"
+                                        Clicked="Delete_Clicked"
+                                        CommandParameter="{Binding Name}"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
