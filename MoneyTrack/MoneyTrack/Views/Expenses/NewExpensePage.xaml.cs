@@ -16,6 +16,7 @@ namespace MoneyTrack.Views.Expenses
     {
         public Expense Expense { get; set; }
         public DateTime Today { get; set; }
+        public int Index { get; set; }
         public List<Category> Categories { get; set; }
         public List<string> CategoryNames { get; set; }
         public CategoriesViewModel catViewModel { get; set; }
@@ -34,20 +35,26 @@ namespace MoneyTrack.Views.Expenses
         public NewExpensePage()
         {
             InitializeComponent();
+            catViewModel = CategoriesViewModel.GetInstance();
+            Categories = catViewModel.GetAllCategories().ToList();
             Expense = new Expense()
             {
-                Name = "Shoes",
+                Name = "",
                 Date = DateTime.Now,
                 Value = 0,
-                Category = new Category() { Name = "Clothes" },
-                CategoryName = "Clothes"
+                Category = null,
+                CategoryName = Categories.FirstOrDefault().Name
             };
             Today = DateTime.Now.Date.ToLocalTime();
             BindingContext = this;
-            catViewModel = new CategoriesViewModel();
-            Categories = catViewModel.GetAllCategories().ToList();
             PopulateCategoryNames();
             categoryPicker.ItemsSource = CategoryNames;
+            SetSelectedItem();
+        }
+
+        private void SetSelectedItem()
+        {
+            Index = -1;
         }
 
         private void PopulateCategoryNames()
@@ -61,8 +68,23 @@ namespace MoneyTrack.Views.Expenses
 
         async void Save_Clicked(object sender, EventArgs e)
         {
+            if (Index < 0)
+            {
+                await DisplayAlert("Category Missing", "Please select a category", "OK");
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(Expense.Name))
+            {
+                await DisplayAlert("Name Missing", "Please fill in the Name field", "OK");
+                return;
+            }
+            if(Expense.Value<=0)
+            {
+                await DisplayAlert("Value Missing", "Please fill in the Value field", "OK");
+                return;
+            }
             Expense.DisplayName = $"{Expense.Name}-{Expense.Date.ToString("dd/MM/yyyy")}";
-            Expense.Category = Categories.FirstOrDefault(x => x.Name == Expense.CategoryName);
+            Expense.Category = Categories[Index];
             Expense.CategoryId = Expense.Category.Id;
             MessagingCenter.Send(this, "AddExpense", Expense);
             await Navigation.PopModalAsync();
