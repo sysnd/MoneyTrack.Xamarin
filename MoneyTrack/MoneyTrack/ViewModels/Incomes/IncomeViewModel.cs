@@ -15,7 +15,16 @@ namespace MoneyTrack.ViewModels.Incomes
         public ObservableCollection<Income> Incomes { get; set; }
         public Command LoadIncomesCommand { get; set; }
         public Command DeleteIncomeCommand { get; set; }
-        public IncomeViewModel()
+        private static IncomeViewModel Instance { get; set; }
+        public static IncomeViewModel GetInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new IncomeViewModel();
+            }
+            return Instance;
+        }
+        private IncomeViewModel()
         {
             Title = "Income History";
             Incomes = new ObservableCollection<Income>();
@@ -25,8 +34,8 @@ namespace MoneyTrack.ViewModels.Incomes
 
             MessagingCenter.Subscribe<NewIncomePage, Income>(this, "AddIncome", async (obj, item) =>
             {
-                DataStore.Add(item);
                 Incomes.Add(item);
+                DataStore.Add(item);
             });
             MessagingCenter.Subscribe<IncomeDetailPage, Income>(this, "UpdateIncome", async (obj, item) =>
             {
@@ -36,7 +45,7 @@ namespace MoneyTrack.ViewModels.Incomes
         }
         public IEnumerable<Income> GetAllIncomes()
         {
-            ExecuteLoadIncomesCommand().Wait();
+            Instance.ExecuteLoadIncomesCommand().Wait();
             return Incomes;
         }
         async Task ExecuteDeleteIncomeCommand(object item)
@@ -75,7 +84,7 @@ namespace MoneyTrack.ViewModels.Incomes
                 var incomes = DataStore.Get(true).OrderByDescending(x=>x.Date);
                 foreach (var item in incomes)
                 {
-                    item.BackgroundColor = new Color(0, 255, 0);
+                    item.BackgroundColor = Color.FromRgb(104, 222, 45);
                     Incomes.Add(item);                    
                 }
             }

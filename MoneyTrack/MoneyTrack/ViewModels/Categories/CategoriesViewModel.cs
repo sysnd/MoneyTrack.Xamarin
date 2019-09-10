@@ -16,7 +16,16 @@ namespace MoneyTrack.ViewModels.Categories
         public ObservableCollection<Category> Categories { get; set; }
         public Command LoadCategoriesCommand { get; set; }
         public Command DeleteCategoriesCommand { get; set; }
-        public CategoriesViewModel()
+        private static CategoriesViewModel Instance { get; set; }
+        public static CategoriesViewModel GetInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new CategoriesViewModel();
+            }
+            return Instance;
+        }
+        private CategoriesViewModel()
         {
             Title = "Categories";
             Categories = new ObservableCollection<Category>();            
@@ -25,14 +34,12 @@ namespace MoneyTrack.ViewModels.Categories
 
             MessagingCenter.Subscribe<NewCategoryPage, Category>(this, "AddCategory", async (obj, item) =>
             {
-                var newItem = item as Category;
-                Categories.Add(newItem);
-                DataStore.Add(newItem);
+                Categories.Add(item);
+                DataStore.Add(item);
             });
             MessagingCenter.Subscribe<CategoryDetailPage, Category>(this, "UpdateCategory", async (obj, item) =>
             {
-                var category = item as Category;
-                DataStore.Update(category);
+                DataStore.Update(item);
             });
         }
         public IEnumerable<Category> GetAllCategories()

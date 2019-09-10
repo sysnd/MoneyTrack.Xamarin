@@ -16,7 +16,16 @@ namespace MoneyTrack.ViewModels.Expenses
         public ObservableCollection<Expense> Expenses { get; set; }
         public Command LoadExpensesCommand { get; set; }
         public Command DeleteExpenseCommand { get; set; }
-        public ExpenseViewModel()
+        private static ExpenseViewModel Instance { get; set; }
+        public static ExpenseViewModel GetInstance()
+        {
+            if (Instance == null)
+            {
+                Instance = new ExpenseViewModel();
+            }
+            return Instance;
+        }
+        private ExpenseViewModel()
         {
             Title = "Expenses History";
             Expenses = new ObservableCollection<Expense>();
@@ -36,7 +45,7 @@ namespace MoneyTrack.ViewModels.Expenses
         }
         public IEnumerable<Expense> GetAllExpenses()
         {
-            ExecuteLoadExpensesCommand().Wait();
+            Instance.ExecuteLoadExpensesCommand().Wait();
             return Expenses;
         }
         async Task ExecuteDeleteExpenseCommand(object item)
@@ -75,7 +84,7 @@ namespace MoneyTrack.ViewModels.Expenses
                 var expenses = DataStore.Get(true).OrderByDescending(x => x.Date);
                 foreach (var item in expenses)
                 {
-                    item.BackgroundColor = new Color(255, 0, 0);
+                    item.BackgroundColor = Color.FromRgb(218, 56, 53);
                     Expenses.Add(item);
                 }
             }
