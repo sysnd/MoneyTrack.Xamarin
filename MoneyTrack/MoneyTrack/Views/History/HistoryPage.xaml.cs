@@ -25,8 +25,7 @@ namespace MoneyTrack.Views.History
         {
             base.OnAppearing();
 
-            if (HistoryViewModel.Expenses.Count == 0)
-                HistoryViewModel.LoadHistoryItemsCommand.Execute(null);
+            HistoryViewModel.LoadHistoryItemsCommand.Execute(null);
             HistoryItemsList.ItemsSource = HistoryViewModel.ItemsGrouped;
             HistoryItemsList.IsGroupingEnabled = true;
             HistoryItemsList.GroupDisplayBinding = new Binding("Key");
