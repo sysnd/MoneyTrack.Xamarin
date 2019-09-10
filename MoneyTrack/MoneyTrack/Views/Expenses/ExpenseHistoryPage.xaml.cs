@@ -18,7 +18,7 @@ namespace MoneyTrack.Views.Expenses
         public ExpenseHistoryPage()
         {
             InitializeComponent();
-            expenseViewModel = new ExpenseViewModel();
+            expenseViewModel = ExpenseViewModel.GetInstance();
             BindingContext = expenseViewModel;
         }
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
@@ -49,8 +49,7 @@ namespace MoneyTrack.Views.Expenses
         {
             base.OnAppearing();
 
-            if (expenseViewModel.Expenses.Count == 0)
-                expenseViewModel.LoadExpensesCommand.Execute(null);
+            expenseViewModel.LoadExpensesCommand.Execute(null);
             ExpensesList.ItemsSource = expenseViewModel.Expenses;
         }
     }

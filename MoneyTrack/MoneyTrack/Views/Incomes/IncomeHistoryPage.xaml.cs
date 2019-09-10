@@ -18,7 +18,7 @@ namespace MoneyTrack.Views.Incomes
         public IncomeHistoryPage()
         {
             InitializeComponent();
-            incomeViewModel = new IncomeViewModel();
+            incomeViewModel = IncomeViewModel.GetInstance();
             BindingContext = incomeViewModel;
         }
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
@@ -49,8 +49,7 @@ namespace MoneyTrack.Views.Incomes
         {
             base.OnAppearing();
 
-            if (incomeViewModel.Incomes.Count == 0)
-                incomeViewModel.LoadIncomesCommand.Execute(null);
+            incomeViewModel.LoadIncomesCommand.Execute(null);
             IncomesList.ItemsSource = incomeViewModel.Incomes;
         }
     }

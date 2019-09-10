@@ -18,7 +18,7 @@ namespace MoneyTrack.Views.Categories
         public CategoriesPage()
         {
             InitializeComponent();
-            viewModel = new CategoriesViewModel();
+            viewModel = CategoriesViewModel.GetInstance();
             BindingContext = viewModel;
         }
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
@@ -39,7 +39,7 @@ namespace MoneyTrack.Views.Categories
         }
         async void Delete_Clicked(object sender, EventArgs e)
         {
-            var button = (Button)sender;            
+            var button = (Button)sender;
             var answer = await DisplayAlert("Delete", "Are you sure you want to delete this item?", "Yes", "No");
             if (answer)
             {
@@ -51,8 +51,7 @@ namespace MoneyTrack.Views.Categories
         {
             base.OnAppearing();
 
-            if (viewModel.Categories.Count == 0)
-                viewModel.LoadCategoriesCommand.Execute(null);
+            viewModel.LoadCategoriesCommand.Execute(null);
             CategoriesList.ItemsSource = viewModel.Categories;
         }
     }
