@@ -15,8 +15,7 @@
             <Entry Text="{Binding Expense.Name}" d:Text="Item name" FontSize="Medium" />
             <Picker x:Name="categoryPicker"
             Title="Select a category"
-            TitleColor="Black"
-            SelectedItem="{Binding Expense.CategoryName}"/>
+            TitleColor="Black"></Picker>
             <Label Text="Date" FontSize="Medium" />
             <DatePicker MinimumDate="01/01/2019"
                         MaximumDate="{Binding Today}"

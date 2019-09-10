@@ -16,9 +16,10 @@
                       SeparatorVisibility="Default" 
                       VerticalOptions="FillAndExpand" 
                       HasUnevenRows="True"
-                      RefreshCommand="{Binding LoadHistoryItemsCommand}"
+                      RefreshCommand="{Binding LoadExpensesCommand}"
                       IsPullToRefreshEnabled="true"
                       CachingStrategy="RecycleElement"
+                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
                       ItemSelected="OnItemSelected">
 
                 <ListView.ItemTemplate>
