@@ -25,11 +25,13 @@ namespace MoneyTrack.Views.Expenses
             this.viewModel = expenseDetailViewModel;
             BindingContext = this.viewModel;
             categoryPicker.ItemsSource = this.viewModel.CategoryNames;
+            categoryPicker.SelectedItem = this.viewModel.Expense.CategoryName;
         }
         async void Update_Clicked(object sender, EventArgs e)
         {
+            viewModel.Expense.CategoryName = categoryPicker.SelectedItem.ToString();
             viewModel.Expense.Category = viewModel.Categories.FirstOrDefault(x => x.Name == viewModel.Expense.CategoryName);
-            viewModel.Expense.CategoryId = viewModel.Expense.Category.Id;
+            viewModel.Expense.CategoryId = viewModel.Expense.Category.Id;            
             MessagingCenter.Send(this, "UpdateExpense", this.viewModel.Expense);
             await Navigation.PopAsync();
         }

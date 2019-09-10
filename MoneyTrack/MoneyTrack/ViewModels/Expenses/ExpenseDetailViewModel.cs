@@ -35,9 +35,14 @@ namespace MoneyTrack.ViewModels.Expenses
         {
             Expense = expense;
             Title = "Expense Details";
-            catViewModel = new CategoriesViewModel();
+            catViewModel = CategoriesViewModel.GetInstance();
             Categories = catViewModel.GetAllCategories().ToList();
             PopulateCategoryNames();
+            if (Expense.CategoryId > 0)
+            {
+                Expense.Category = Categories.FirstOrDefault(c => c.Id == Expense.CategoryId);
+                Expense.CategoryName = Expense.Category.Name;
+            }
         }
         private void PopulateCategoryNames()
         {
