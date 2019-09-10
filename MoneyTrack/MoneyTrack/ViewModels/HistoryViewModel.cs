@@ -21,13 +21,14 @@ namespace MoneyTrack.ViewModels
         public IncomeViewModel incomeViewModel { get; set; }
         public ExpenseViewModel expenseViewModel { get; set; }
         public Color SubTextColor { get; set; }
+        public Color TextColor { get; set; }
         public string Balance { get; set; }
         public List<Grouping<string, IHistoryItem>> ItemsGrouped { get; set; }
         public HistoryViewModel()
         {
             LoadHistoryItemsCommand = new Command(async () => await ExecuteLoadHistoryItemsCommand());
-            incomeViewModel = new IncomeViewModel();
-            expenseViewModel = new ExpenseViewModel();
+            incomeViewModel = IncomeViewModel.GetInstance();
+            expenseViewModel = ExpenseViewModel.GetInstance();
             HistoryItems = new List<IHistoryItem>();
             Expenses = expenseViewModel.GetAllExpenses().ToList();
             Incomes = incomeViewModel.GetAllIncomes().ToList();
@@ -36,7 +37,8 @@ namespace MoneyTrack.ViewModels
             HistoryItems = HistoryItems.OrderByDescending(x => x.Date).ToList();
             Balance = CalculateBalance();
             ItemsGrouped = GroupItems();
-            SubTextColor = new Color(100, 100, 100);
+            SubTextColor = Color.FromRgb(100, 100, 100);
+            TextColor = Color.FromRgb(95, 108, 128);
         }
 
         private List<Grouping<string, IHistoryItem>> GroupItems()
@@ -65,9 +67,11 @@ namespace MoneyTrack.ViewModels
             {
                 Expenses = expenseViewModel.GetAllExpenses().ToList();
                 Incomes = incomeViewModel.GetAllIncomes().ToList();
+                HistoryItems.Clear();
                 HistoryItems.AddRange(Expenses);
                 HistoryItems.AddRange(Incomes);
-                HistoryItems = HistoryItems.OrderBy(x => x.Date).ToList();
+                HistoryItems = HistoryItems.OrderByDescending(x => x.Date).ToList();
+                ItemsGrouped = GroupItems();
             }
             catch (Exception ex)
             {
