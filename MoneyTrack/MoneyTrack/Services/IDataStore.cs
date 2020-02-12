@@ -6,10 +6,10 @@ namespace MoneyTrack.Services
 {
     public interface IDataStore<T>
     {
-        bool Add(T item);
-        bool Update(T item);
-        bool Delete(object id);
-        T Get(int id);
-        IEnumerable<T> Get(bool forceRefresh = false);
+        Task<bool> AddAsync(T item);
+        Task<bool> UpdateAsync(T item);
+        Task<bool> DeleteAsync(object id);
+        Task<T> GetAsync(int id);
+        Task<IEnumerable<T>> GetAsync(bool forceRefresh = false);
     }
 }

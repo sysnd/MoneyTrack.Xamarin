@@ -1,7 +1,9 @@
 ﻿using MoneyTrack.Data;
 using MoneyTrack.Models;
 using MoneyTrack.Services.ExpenseService;
+using SQLite;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(ExpenseService))]
@@ -10,39 +12,39 @@ namespace MoneyTrack.Services.ExpenseService
 {
     public class ExpenseService : IDataStore<Expense>
     {
-        private readonly SQLite.SQLiteConnection _connection;
+        private readonly SQLiteAsyncConnection _connection;
         public ExpenseService()
         {
             _connection = DependencyService.Get<ISQLite>().GetConnection();
-            _connection.CreateTable<Expense>();
+            _connection.CreateTableAsync<Expense>();
         }
 
-        public bool Add(Expense item)
+        public async Task<bool> AddAsync(Expense expense)
         {
-            var count = _connection.Insert(item);
+            var count = await _connection.InsertAsync(expense);
             return count > 0;
         }
 
-        public bool Delete(object item)
+        public async Task<bool> DeleteAsync(object expense)
         {
-            var count = _connection.Delete(item);
+            var count = await _connection.DeleteAsync(expense);
             return count > 0;
         }
 
-        public Expense Get(int id)
+        public async Task<Expense> GetAsync(int id)
         {
-            return _connection.Get<Expense>(id);
+            return await _connection.GetAsync<Expense>(id);
         }
 
-        public IEnumerable<Expense> Get(bool forceRefresh = false)
+        public async Task<IEnumerable<Expense>> GetAsync(bool forceRefresh = false)
         {
-            var expenses = _connection.Query<Expense>("SELECT DISTINCT * FROM Expense");
-            return expenses;
+            var categories = await _connection.QueryAsync<Expense>("SELECT DISTINCT * FROM Expense");
+            return categories;
         }
 
-        public bool Update(Expense item)
+        public async Task<bool> UpdateAsync(Expense expense)
         {
-            var count = _connection.Update(item);
+            var count = await _connection.UpdateAsync(expense);
             return count > 0;
         }
     }

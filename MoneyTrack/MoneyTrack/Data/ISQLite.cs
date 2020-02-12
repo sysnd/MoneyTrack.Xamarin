@@ -4,6 +4,6 @@ namespace MoneyTrack.Data
 {
     public interface ISQLite
     {
-        SQLiteConnection GetConnection();
+        SQLiteAsyncConnection GetConnection();
     }
 }

@@ -1,7 +1,9 @@
 ﻿using MoneyTrack.Data;
 using MoneyTrack.Models;
 using MoneyTrack.Services.IncomeService;
+using SQLite;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 [assembly: Dependency(typeof(IncomeService))]
@@ -9,39 +11,39 @@ namespace MoneyTrack.Services.IncomeService
 {
     public class IncomeService : IDataStore<Income>
     {
-        private readonly SQLite.SQLiteConnection _connection;
+        private readonly SQLiteAsyncConnection _connection;
 
         public IncomeService()
         {
             _connection = DependencyService.Get<ISQLite>().GetConnection();
-            _connection.CreateTable<Income>();
+            _connection.CreateTableAsync<Income>();
         }
-        public bool Add(Income item)
+        public async Task<bool> AddAsync(Income income)
         {
-            var count = _connection.Insert(item);
+            var count = await _connection.InsertAsync(income);
             return count > 0;
         }
 
-        public bool Delete(object income)
+        public async Task<bool> DeleteAsync(object income)
         {
-            var count = _connection.Delete(income);
+            var count = await _connection.DeleteAsync(income);
             return count > 0;
         }
 
-        public Income Get(int id)
+        public async Task<Income> GetAsync(int id)
         {
-            return _connection.Get<Income>(id);
+            return await _connection.GetAsync<Income>(id);
         }
 
-        public IEnumerable<Income> Get(bool forceRefresh = false)
+        public async Task<IEnumerable<Income>> GetAsync(bool forceRefresh = false)
         {
-            var income = _connection.Query<Income>("SELECT DISTINCT * FROM Income");
+            var income = await _connection.QueryAsync<Income>("SELECT DISTINCT * FROM Income");
             return income;
         }
 
-        public bool Update(Income item)
+        public async Task<bool> UpdateAsync(Income income)
         {
-            var count = _connection.Update(item);
+            var count = await _connection.UpdateAsync(income);
             return count > 0;
         }
     }

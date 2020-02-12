@@ -9,7 +9,7 @@ namespace MoneyTrack.ViewModels.Expenses
     public class ExpenseDetailViewModel : BaseViewModel<Expense>
     {
         public Expense Expense { get; set; }
-        public List<Category> Categories { get; set; }
+        public IEnumerable<Category> Categories { get; set; }
         public List<string> CategoryNames { get; set; }
         public CategoriesViewModel catViewModel { get; set; }
         public DateTime Today
@@ -36,7 +36,7 @@ namespace MoneyTrack.ViewModels.Expenses
             Expense = expense;
             Title = "Expense Details";
             catViewModel = CategoriesViewModel.GetInstance();
-            Categories = catViewModel.GetAllCategories().ToList();
+            Categories = catViewModel.GetAllCategoriesAsync().Result;
             PopulateCategoryNames();
             if (Expense.CategoryId > 0)
             {
@@ -47,9 +47,9 @@ namespace MoneyTrack.ViewModels.Expenses
         private void PopulateCategoryNames()
         {
             CategoryNames = new List<string>();
-            foreach (var item in Categories)
+            foreach (var category in Categories)
             {
-                CategoryNames.Add(item.Name);
+                CategoryNames.Add(category.Name);
             }
         }
     }

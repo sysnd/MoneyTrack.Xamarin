@@ -2,53 +2,50 @@
 using MoneyTrack.Models;
 using MoneyTrack.Services.CategoryService;
 using SQLite;
-using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-[assembly:Dependency(typeof(CategoryService))]  
+[assembly: Dependency(typeof(CategoryService))]
 namespace MoneyTrack.Services.CategoryService
 {
 
     public class CategoryService : IDataStore<Category>
     {
-        private readonly SQLite.SQLiteConnection _connection;
+        private readonly SQLiteAsyncConnection _connection;
 
         public CategoryService()
         {
             _connection = DependencyService.Get<ISQLite>().GetConnection();
-            _connection.CreateTable<Category>();
+            _connection.CreateTableAsync<Category>();
         }
 
-        public bool Add(Category item)
+        public async Task<bool> AddAsync(Category category)
         {
-            var count = _connection.Insert(item);
+            var count = await _connection.InsertAsync(category);
             return count > 0;
         }
 
-        public bool Delete(object cat)
+        public async Task<bool> DeleteAsync(object category)
         {
-            var count = _connection.Delete(cat);
+            var count = await _connection.DeleteAsync(category);
             return count > 0;
         }
 
-        public Category Get(int id)
+        public async Task<Category> GetAsync(int id)
         {
-            return _connection.Get<Category>(id);
+            return await _connection.GetAsync<Category>(id);
         }
 
-        public IEnumerable<Category> Get(bool forceRefresh = false)
+        public async Task<IEnumerable<Category>> GetAsync(bool forceRefresh = false)
         {
-            var categories = _connection.Query<Category>("SELECT DISTINCT * FROM Category");           
+            var categories = await _connection.QueryAsync<Category>("SELECT DISTINCT * FROM Category");           
             return categories;
         }
 
-        public bool Update(Category item)
+        public async Task<bool> UpdateAsync(Category category)
         {
-            var count = _connection.Update(item);
+            var count = await _connection.UpdateAsync(category);
             return count > 0;
         }
     }

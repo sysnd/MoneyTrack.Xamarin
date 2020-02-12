@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -14,12 +13,12 @@ namespace MoneyTrack.ViewModels
 {
     public class HistoryViewModel :BaseViewModel<IHistoryItem>
     {
-        public List<Income> Incomes { get; set; }
-        public List<Expense> Expenses { get; set; }
+        public IEnumerable<Income> Incomes { get; set; }
+        public IEnumerable<Expense> Expenses { get; set; }
         public List<IHistoryItem> HistoryItems { get; set; }
         public Command LoadHistoryItemsCommand { get; set; }
-        public IncomeViewModel incomeViewModel { get; set; }
-        public ExpenseViewModel expenseViewModel { get; set; }
+        public IncomeViewModel IncomeViewModel { get; set; }
+        public ExpenseViewModel ExpenseViewModel { get; set; }
         public Color SubTextColor { get; set; }
         public Color TextColor { get; set; }
         public string Balance { get; set; }
@@ -27,11 +26,11 @@ namespace MoneyTrack.ViewModels
         public HistoryViewModel()
         {
             LoadHistoryItemsCommand = new Command(async () => await ExecuteLoadHistoryItemsCommand());
-            incomeViewModel = IncomeViewModel.GetInstance();
-            expenseViewModel = ExpenseViewModel.GetInstance();
+            IncomeViewModel = IncomeViewModel.GetInstance();
+            ExpenseViewModel = ExpenseViewModel.GetInstance();
             HistoryItems = new List<IHistoryItem>();
-            Expenses = expenseViewModel.GetAllExpenses().ToList();
-            Incomes = incomeViewModel.GetAllIncomes().ToList();
+            Expenses = ExpenseViewModel.GetAllExpensesAsync().Result;
+            Incomes = IncomeViewModel.GetAllIncomesAsync().Result;
             HistoryItems.AddRange(Expenses);
             HistoryItems.AddRange(Incomes);
             HistoryItems = HistoryItems.OrderByDescending(x => x.Date).ToList();
@@ -51,8 +50,8 @@ namespace MoneyTrack.ViewModels
         {
             var income = 0.00M; 
             var expenses = 0.00M;
-            Incomes.ForEach(x => income += x.Value);
-            Expenses.ForEach(x => expenses += x.Value);
+            Incomes.ToList().ForEach(x => income += x.Value);
+            Expenses.ToList().ForEach(x => expenses += x.Value);
             return (income - expenses).ToString();
         }
 
@@ -65,8 +64,8 @@ namespace MoneyTrack.ViewModels
 
             try
             {
-                Expenses = expenseViewModel.GetAllExpenses().ToList();
-                Incomes = incomeViewModel.GetAllIncomes().ToList();
+                Expenses = await ExpenseViewModel.GetAllExpensesAsync();
+                Incomes = await IncomeViewModel.GetAllIncomesAsync();
                 HistoryItems.Clear();
                 HistoryItems.AddRange(Expenses);
                 HistoryItems.AddRange(Incomes);

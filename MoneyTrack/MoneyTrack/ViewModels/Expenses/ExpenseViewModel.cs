@@ -7,11 +7,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace MoneyTrack.ViewModels.Expenses
 {
-    public class ExpenseViewModel: BaseViewModel<Expense>
+    public class ExpenseViewModel : BaseViewModel<Expense>
     {
         public ObservableCollection<Expense> Expenses { get; set; }
         public Command LoadExpensesCommand { get; set; }
@@ -34,20 +33,22 @@ namespace MoneyTrack.ViewModels.Expenses
 
             MessagingCenter.Subscribe<NewExpensePage, Expense>(this, "AddExpense", async (obj, item) =>
             {
-                DataStore.Add(item);
+                await DataStore.AddAsync(item);
                 Expenses.Add(item);
             });
             MessagingCenter.Subscribe<ExpenseDetailPage, Expense>(this, "UpdateExpense", async (obj, item) =>
             {
                 item.DisplayName = $"{item.Name}-{item.Date.ToString("dd/MM/yyyy")}";
-                DataStore.Update(item);
+                await DataStore.UpdateAsync(item);
             });
         }
-        public IEnumerable<Expense> GetAllExpenses()
+
+        public async Task<IEnumerable<Expense>> GetAllExpensesAsync()
         {
-            Instance.ExecuteLoadExpensesCommand().Wait();
+            await ExecuteLoadExpensesCommand();
             return Expenses;
         }
+
         async Task ExecuteDeleteExpenseCommand(object item)
         {
             if (IsBusy)
@@ -58,7 +59,7 @@ namespace MoneyTrack.ViewModels.Expenses
             try
             {
                 var expense = Expenses.FirstOrDefault(x => x.Id == itemAsExpense.Id);
-                DataStore.Delete(expense);
+                await DataStore.DeleteAsync(expense);
                 Expenses.Remove(expense);
             }
             catch (Exception ex)
@@ -81,7 +82,8 @@ namespace MoneyTrack.ViewModels.Expenses
             try
             {
                 Expenses.Clear();
-                var expenses = DataStore.Get(true).OrderByDescending(x => x.Date);
+                var expenses = await DataStore.GetAsync(true);
+                expenses = expenses.OrderByDescending(x => x.Date);
                 foreach (var item in expenses)
                 {
                     item.BackgroundColor = Color.FromRgb(218, 56, 53);

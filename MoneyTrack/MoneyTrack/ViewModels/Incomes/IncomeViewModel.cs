@@ -35,17 +35,17 @@ namespace MoneyTrack.ViewModels.Incomes
             MessagingCenter.Subscribe<NewIncomePage, Income>(this, "AddIncome", async (obj, item) =>
             {
                 Incomes.Add(item);
-                DataStore.Add(item);
+                await DataStore.AddAsync(item);
             });
             MessagingCenter.Subscribe<IncomeDetailPage, Income>(this, "UpdateIncome", async (obj, item) =>
             {
                 item.DisplayName = $"{item.Name}-{item.Date.ToString("dd/MM/yyyy")}";
-                DataStore.Update(item);
+                await DataStore.UpdateAsync(item);
             });
         }
-        public IEnumerable<Income> GetAllIncomes()
+        public async Task<IEnumerable<Income>> GetAllIncomesAsync()
         {
-            Instance.ExecuteLoadIncomesCommand().Wait();
+            await ExecuteLoadIncomesCommand();
             return Incomes;
         }
         async Task ExecuteDeleteIncomeCommand(object item)
@@ -58,7 +58,7 @@ namespace MoneyTrack.ViewModels.Incomes
             try
             {
                 var income = Incomes.FirstOrDefault(x => x.Id == itemAsIncome.Id);
-                DataStore.Delete(income);
+                await DataStore.DeleteAsync(income);
                 Incomes.Remove(income);
             }
             catch (Exception ex)
@@ -81,11 +81,12 @@ namespace MoneyTrack.ViewModels.Incomes
             try
             {
                 Incomes.Clear();
-                var incomes = DataStore.Get(true).OrderByDescending(x=>x.Date);
+                var incomes = await DataStore.GetAsync(true);
+                incomes = incomes.OrderByDescending(x => x.Date);
                 foreach (var item in incomes)
                 {
                     item.BackgroundColor = Color.FromRgb(104, 222, 45);
-                    Incomes.Add(item);                    
+                    Incomes.Add(item);
                 }
             }
             catch (Exception ex)
