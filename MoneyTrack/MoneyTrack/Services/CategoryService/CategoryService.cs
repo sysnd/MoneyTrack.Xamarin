@@ -1,15 +1,10 @@
 ﻿using MoneyTrack.Data;
 using MoneyTrack.Models;
 using MoneyTrack.Services.CategoryService;
-using SQLite;
-using System;
 using System.Collections.Generic;
-using System.Data.SQLite;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
-[assembly:Dependency(typeof(CategoryService))]  
+[assembly: Dependency(typeof(CategoryService))]
 namespace MoneyTrack.Services.CategoryService
 {
 

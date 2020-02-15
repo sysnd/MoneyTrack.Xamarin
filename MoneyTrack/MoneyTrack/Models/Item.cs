@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MoneyTrack.Models
+﻿namespace MoneyTrack.Models
 {
     public class Item
     {

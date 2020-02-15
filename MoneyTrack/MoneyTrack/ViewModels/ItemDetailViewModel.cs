@@ -1,6 +1,4 @@
-﻿using System;
-
-using MoneyTrack.Models;
+﻿using MoneyTrack.Models;
 
 namespace MoneyTrack.ViewModels
 {

@@ -1,12 +1,10 @@
-﻿using System;
+﻿using MoneyTrack.Models;
+using MoneyTrack.Views;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
-
-using MoneyTrack.Models;
-using MoneyTrack.Views;
 
 namespace MoneyTrack.ViewModels
 {
@@ -19,9 +17,9 @@ namespace MoneyTrack.ViewModels
         {
             Title = "Browse";
             Items = new ObservableCollection<Item>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", (obj, item) =>
             {
                 var newItem = item as Item;
                 Items.Add(newItem);
@@ -29,7 +27,7 @@ namespace MoneyTrack.ViewModels
             });
         }
 
-        async Task ExecuteLoadItemsCommand()
+        void ExecuteLoadItemsCommand()
         {
             if (IsBusy)
                 return;

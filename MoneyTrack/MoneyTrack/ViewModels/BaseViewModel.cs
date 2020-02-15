@@ -1,12 +1,9 @@
-﻿using System;
+﻿using MoneyTrack.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
 using Xamarin.Forms;
-
-using MoneyTrack.Models;
-using MoneyTrack.Services;
 
 namespace MoneyTrack.ViewModels
 {
@@ -28,11 +25,11 @@ namespace MoneyTrack.ViewModels
             set { SetProperty(ref title, value); }
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value,
+        protected bool SetProperty<Type>(ref Type backingStore, Type value,
             [CallerMemberName]string propertyName = "",
             Action onChanged = null)
         {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+            if (EqualityComparer<Type>.Default.Equals(backingStore, value))
                 return false;
 
             backingStore = value;

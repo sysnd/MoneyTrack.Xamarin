@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MoneyTrack.Models
+﻿namespace MoneyTrack.Models
 {
     public enum MenuItemType
     {      

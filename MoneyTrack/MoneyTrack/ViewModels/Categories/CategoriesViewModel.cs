@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace MoneyTrack.ViewModels.Categories
@@ -29,25 +27,25 @@ namespace MoneyTrack.ViewModels.Categories
         {
             Title = "Categories";
             Categories = new ObservableCollection<Category>();            
-            LoadCategoriesCommand = new Command(async () => await ExecuteLoadCategoriesCommand());
-            DeleteCategoriesCommand = new Command(async (name) => await ExecuteDeleteCategoriesCommand(name));
+            LoadCategoriesCommand = new Command(ExecuteLoadCategoriesCommand);
+            DeleteCategoriesCommand = new Command((name) => ExecuteDeleteCategoriesCommand(name));
 
-            MessagingCenter.Subscribe<NewCategoryPage, Category>(this, "AddCategory", async (obj, item) =>
+            MessagingCenter.Subscribe<NewCategoryPage, Category>(this, "AddCategory", (obj, item) =>
             {
                 Categories.Add(item);
                 DataStore.Add(item);
             });
-            MessagingCenter.Subscribe<CategoryDetailPage, Category>(this, "UpdateCategory", async (obj, item) =>
+            MessagingCenter.Subscribe<CategoryDetailPage, Category>(this, "UpdateCategory", (obj, item) =>
             {
                 DataStore.Update(item);
             });
         }
         public IEnumerable<Category> GetAllCategories()
         {
-            ExecuteLoadCategoriesCommand().Wait();
+            ExecuteLoadCategoriesCommand();
             return Categories;
         } 
-        async Task ExecuteLoadCategoriesCommand()
+        void ExecuteLoadCategoriesCommand()
         {
             if (IsBusy)
                 return;
@@ -72,7 +70,7 @@ namespace MoneyTrack.ViewModels.Categories
                 IsBusy = false;
             }
         }
-        async Task ExecuteDeleteCategoriesCommand(object name)
+        void ExecuteDeleteCategoriesCommand(object name)
         {
             if (IsBusy)
                 return;

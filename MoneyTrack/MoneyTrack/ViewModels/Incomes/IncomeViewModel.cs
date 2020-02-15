@@ -1,12 +1,11 @@
-﻿using System;
+﻿using MoneyTrack.Models;
+using MoneyTrack.Views.Incomes;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using MoneyTrack.Models;
-using Xamarin.Forms;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
-using MoneyTrack.Views.Incomes;
-using System.Collections.Generic;
+using Xamarin.Forms;
 
 namespace MoneyTrack.ViewModels.Incomes
 {
@@ -28,16 +27,16 @@ namespace MoneyTrack.ViewModels.Incomes
         {
             Title = "Income History";
             Incomes = new ObservableCollection<Income>();
-            LoadIncomesCommand = new Command(async () => await ExecuteLoadIncomesCommand());
-            DeleteIncomeCommand = new Command(async (name) => await ExecuteDeleteIncomeCommand(name));
+            LoadIncomesCommand = new Command(ExecuteLoadIncomesCommand);
+            DeleteIncomeCommand = new Command((name) => ExecuteDeleteIncomeCommand(name));
 
 
-            MessagingCenter.Subscribe<NewIncomePage, Income>(this, "AddIncome", async (obj, item) =>
+            MessagingCenter.Subscribe<NewIncomePage, Income>(this, "AddIncome", (obj, item) =>
             {
                 Incomes.Add(item);
                 DataStore.Add(item);
             });
-            MessagingCenter.Subscribe<IncomeDetailPage, Income>(this, "UpdateIncome", async (obj, item) =>
+            MessagingCenter.Subscribe<IncomeDetailPage, Income>(this, "UpdateIncome", (obj, item) =>
             {
                 item.DisplayName = $"{item.Name}-{item.Date.ToString("dd/MM/yyyy")}";
                 DataStore.Update(item);
@@ -45,10 +44,10 @@ namespace MoneyTrack.ViewModels.Incomes
         }
         public IEnumerable<Income> GetAllIncomes()
         {
-            Instance.ExecuteLoadIncomesCommand().Wait();
+            Instance.ExecuteLoadIncomesCommand();
             return Incomes;
         }
-        async Task ExecuteDeleteIncomeCommand(object item)
+        void ExecuteDeleteIncomeCommand(object item)
         {
             if (IsBusy)
                 return;
@@ -71,7 +70,7 @@ namespace MoneyTrack.ViewModels.Incomes
             }
         }
 
-        async Task ExecuteLoadIncomesCommand()
+        void ExecuteLoadIncomesCommand()
         {
             if (IsBusy)
                 return;

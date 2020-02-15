@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 
 namespace MoneyTrack.ViewModels.Expenses
 {
@@ -29,15 +27,15 @@ namespace MoneyTrack.ViewModels.Expenses
         {
             Title = "Expenses History";
             Expenses = new ObservableCollection<Expense>();
-            LoadExpensesCommand = new Command(async () => await ExecuteLoadExpensesCommand());
-            DeleteExpenseCommand = new Command(async (name) => await ExecuteDeleteExpenseCommand(name));
+            LoadExpensesCommand = new Command(ExecuteLoadExpensesCommand);
+            DeleteExpenseCommand = new Command((name) => ExecuteDeleteExpenseCommand(name));
 
-            MessagingCenter.Subscribe<NewExpensePage, Expense>(this, "AddExpense", async (obj, item) =>
+            MessagingCenter.Subscribe<NewExpensePage, Expense>(this, "AddExpense", (obj, item) =>
             {
                 DataStore.Add(item);
                 Expenses.Add(item);
             });
-            MessagingCenter.Subscribe<ExpenseDetailPage, Expense>(this, "UpdateExpense", async (obj, item) =>
+            MessagingCenter.Subscribe<ExpenseDetailPage, Expense>(this, "UpdateExpense", (obj, item) =>
             {
                 item.DisplayName = $"{item.Name}-{item.Date.ToString("dd/MM/yyyy")}";
                 DataStore.Update(item);
@@ -45,10 +43,10 @@ namespace MoneyTrack.ViewModels.Expenses
         }
         public IEnumerable<Expense> GetAllExpenses()
         {
-            Instance.ExecuteLoadExpensesCommand().Wait();
+            Instance.ExecuteLoadExpensesCommand();
             return Expenses;
         }
-        async Task ExecuteDeleteExpenseCommand(object item)
+        void ExecuteDeleteExpenseCommand(object item)
         {
             if (IsBusy)
                 return;
@@ -71,7 +69,7 @@ namespace MoneyTrack.ViewModels.Expenses
             }
         }
 
-        async Task ExecuteLoadExpensesCommand()
+        void ExecuteLoadExpensesCommand()
         {
             if (IsBusy)
                 return;

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -26,7 +25,7 @@ namespace MoneyTrack.ViewModels
         public List<Grouping<string, IHistoryItem>> ItemsGrouped { get; set; }
         public HistoryViewModel()
         {
-            LoadHistoryItemsCommand = new Command(async () => await ExecuteLoadHistoryItemsCommand());
+            LoadHistoryItemsCommand = new Command(ExecuteLoadHistoryItemsCommand);
             incomeViewModel = IncomeViewModel.GetInstance();
             expenseViewModel = ExpenseViewModel.GetInstance();
             HistoryItems = new List<IHistoryItem>();
@@ -56,7 +55,7 @@ namespace MoneyTrack.ViewModels
             return (income - expenses).ToString();
         }
 
-        async Task ExecuteLoadHistoryItemsCommand()
+        void ExecuteLoadHistoryItemsCommand()
         {
             if (IsBusy)
                 return;
