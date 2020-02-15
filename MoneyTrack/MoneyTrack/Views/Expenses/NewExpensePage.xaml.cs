@@ -36,7 +36,7 @@ namespace MoneyTrack.Views.Expenses
         {
             InitializeComponent();
             catViewModel = CategoriesViewModel.GetInstance();
-            Categories = catViewModel.GetAllCategoriesAsync().Result.ToList();
+            Categories = catViewModel.GetAllCategories().ToList();
             Expense = new Expense()
             {
                 Name = "",

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -34,16 +35,16 @@ namespace MoneyTrack.ViewModels.Categories
             MessagingCenter.Subscribe<NewCategoryPage, Category>(this, "AddCategory", async (obj, item) =>
             {
                 Categories.Add(item);
-                await DataStore.AddAsync(item);
+                DataStore.Add(item);
             });
             MessagingCenter.Subscribe<CategoryDetailPage, Category>(this, "UpdateCategory", async (obj, item) =>
             {
-                await DataStore.UpdateAsync(item);
+                DataStore.Update(item);
             });
         }
-        public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
+        public IEnumerable<Category> GetAllCategories()
         {
-            await ExecuteLoadCategoriesCommand();
+            ExecuteLoadCategoriesCommand().Wait();
             return Categories;
         } 
         async Task ExecuteLoadCategoriesCommand()
@@ -56,7 +57,7 @@ namespace MoneyTrack.ViewModels.Categories
             try
             {
                 Categories.Clear();
-                var categories = await DataStore.GetAsync(true);
+                var categories = DataStore.Get(true);
                 foreach (var item in categories)
                 {
                     Categories.Add(item);
@@ -81,7 +82,7 @@ namespace MoneyTrack.ViewModels.Categories
             try
             {
                 var cat = Categories.FirstOrDefault(x => x.Name == name.ToString());
-                await DataStore.DeleteAsync(cat);
+                DataStore.Delete(cat);
                 Categories.Remove(cat);
             }
             catch (Exception ex)

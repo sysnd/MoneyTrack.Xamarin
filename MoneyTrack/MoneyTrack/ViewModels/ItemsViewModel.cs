@@ -2,7 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+
 using MoneyTrack.Models;
 using MoneyTrack.Views;
 
@@ -23,7 +25,7 @@ namespace MoneyTrack.ViewModels
             {
                 var newItem = item as Item;
                 Items.Add(newItem);
-                await DataStore.AddAsync(newItem);
+                DataStore.Add(newItem);
             });
         }
 
@@ -37,7 +39,7 @@ namespace MoneyTrack.ViewModels
             try
             {
                 Items.Clear();
-                var items = await DataStore.GetAsync(true);
+                var items = DataStore.Get(true);
                 foreach (var item in items)
                 {
                     Items.Add(item);

@@ -9,13 +9,13 @@ namespace MoneyTrack.Data
 {
     public class SQLiteBase : ISQLite
     {
-        public SQLiteAsyncConnection GetConnection()
+        public SQLiteConnection GetConnection()
         {
             var fileName = "MoneyTrack.db3";
             var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             var path = Path.Combine(documentsPath, fileName);
 
-            var connection = new SQLiteAsyncConnection(path);
+            var connection = new SQLiteConnection(path);
 
             return connection;
         }
